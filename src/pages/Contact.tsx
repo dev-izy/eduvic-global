@@ -158,7 +158,7 @@ export default function Contact() {
                       id="name"
                       name="name"
                       required
-                      placeholder="John Doe"
+                      placeholder="Name"
                       className="w-full px-4 py-3 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 text-slate-900 placeholder:text-slate-400 transition-all"
                     />
                   </div>
@@ -172,7 +172,7 @@ export default function Contact() {
                       id="email"
                       name="email"
                       required
-                      placeholder="john@example.com"
+                      placeholder="Email"
                       className="w-full px-4 py-3 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 text-slate-900 placeholder:text-slate-400 transition-all"
                     />
                   </div>
@@ -258,8 +258,7 @@ export default function Contact() {
                   <div>
                     <h3 className="text-sm font-bold text-slate-900 mb-1">Office Address</h3>
                     <p className="text-sm text-slate-600 leading-relaxed">
-                      12 Admiralty Way, Lekki Phase 1<br />
-                      Lagos, Nigeria
+                      Landmark House, Isaac John Street, Ikeja,<br /> Lagos, Nigeria
                     </p>
                   </div>
                 </div>
@@ -270,8 +269,8 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="text-sm font-bold text-slate-900 mb-1">Phone</h3>
-                    <p className="text-sm text-slate-600">+234 801 234 5678</p>
-                    <p className="text-sm text-slate-600">+234 802 345 6789</p>
+                    <p className="text-sm text-slate-600">+234 808 058 7601</p>
+                    <p className="text-sm text-slate-600">+234 812 666 9153</p>
                   </div>
                 </div>
 
@@ -281,8 +280,8 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="text-sm font-bold text-slate-900 mb-1">Email</h3>
-                    <p className="text-sm text-slate-600">hello@eduvictravels.com</p>
-                    <p className="text-sm text-slate-600">support@eduvictravels.com</p>
+                    <p className="text-sm text-slate-600">eduvicgloballtravels@gmail.com</p>
+                    <p className="text-sm text-slate-600">eduvicglobalinternational@gmail.com</p>
                   </div>
                 </div>
 
@@ -292,8 +291,8 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="text-sm font-bold text-slate-900 mb-1">Business Hours</h3>
-                    <p className="text-sm text-slate-600">Monday - Friday: 8:00 AM - 6:00 PM</p>
-                    <p className="text-sm text-slate-600">Saturday: 9:00 AM - 2:00 PM</p>
+                    <p className="text-sm text-slate-600">Monday - Friday: 9:00 AM - 5:00 PM</p>
+                    <p className="text-sm text-slate-600">Saturday: 9:00 AM - 1:00 PM</p>
                     <p className="text-sm text-slate-600">Sunday: Closed</p>
                   </div>
                 </div>

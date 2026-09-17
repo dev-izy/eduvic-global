@@ -1,32 +1,32 @@
 import PublicNavbar from "../components/features/PublicNavbar";
 import PublicFooter from "../components/features/PublicFooter";
 
-const teamMembers = [
-  {
-    name: "Victor Edu",
-    role: "Founder & CEO",
-    bio: "With over 15 years in travel consultancy, Victor founded Eduvic with a mission to simplify international travel for Nigerians.",
-    image: "https://readdy.ai/api/search-image?query=Professional%20African%20Nigerian%20man%20in%20his%20early%2040s%20wearing%20a%20navy%20blue%20blazer%20and%20white%20shirt%2C%20warm%20confident%20smile%2C%20clean%20studio%20portrait%20with%20soft%20natural%20lighting%2C%20modern%20corporate%20headshot%20style%2C%20simple%20neutral%20light%20gray%20background%2C%20approachable%20and%20trustworthy%20expression%2C%20high-end%20business%20photography&width=400&height=400&seq=team-victor-edu&orientation=squarish",
-  },
-  {
-    name: "Amara Okafor",
-    role: "Head of Operations",
-    bio: "Amara oversees all visa processing pipelines and ensures every application moves efficiently through each stage.",
-    image: "https://readdy.ai/api/search-image?query=Professional%20African%20Nigerian%20woman%20in%20her%20mid%2030s%20wearing%20an%20orange%20blouse%20and%20navy%20blazer%2C%20confident%20genuine%20smile%2C%20clean%20studio%20portrait%20with%20soft%20natural%20lighting%2C%20modern%20corporate%20headshot%20style%2C%20simple%20neutral%20light%20gray%20background%2C%20warm%20approachable%20expression%2C%20high-end%20business%20photography&width=400&height=400&seq=team-amara-okafor&orientation=squarish",
-  },
-  {
-    name: "David Bello",
-    role: "Lead Travel Consultant",
-    bio: "David curates every travel package on our platform, personally vetting hotels, tours, and experiences across 150+ destinations.",
-    image: "https://readdy.ai/api/search-image?query=Professional%20African%20Nigerian%20man%20in%20his%20late%2030s%20wearing%20a%20casual%20navy%20polo%20shirt%2C%20warm%20friendly%20smile%2C%20clean%20studio%20portrait%20with%20soft%20natural%20lighting%2C%20modern%20corporate%20headshot%20style%2C%20simple%20neutral%20light%20gray%20background%2C%20enthusiastic%20and%20approachable%20expression%2C%20high-end%20business%20photography&width=400&height=400&seq=team-david-bello&orientation=squarish",
-  },
-  {
-    name: "Chioma Nwosu",
-    role: "Client Relations Manager",
-    bio: "Chioma ensures every client receives personalized attention from consultation through to boarding the plane.",
-    image: "https://readdy.ai/api/search-image?query=Professional%20African%20Nigerian%20woman%20in%20her%20early%2030s%20wearing%20a%20cream%20blouse%2C%20bright%20genuine%20smile%2C%20clean%20studio%20portrait%20with%20soft%20natural%20lighting%2C%20modern%20corporate%20headshot%20style%2C%20simple%20neutral%20light%20gray%20background%2C%20warm%20and%20caring%20expression%2C%20high-end%20business%20photography&width=400&height=400&seq=team-chioma-nwosu&orientation=squarish",
-  },
-];
+// const teamMembers = [
+//   {
+//     name: "Victor Edu",
+//     role: "Founder & CEO",
+//     bio: "With over 15 years in travel consultancy, Victor founded Eduvic with a mission to simplify international travel for Nigerians.",
+//     image: "https://readdy.ai/api/search-image?query=Professional%20African%20Nigerian%20man%20in%20his%20early%2040s%20wearing%20a%20navy%20blue%20blazer%20and%20white%20shirt%2C%20warm%20confident%20smile%2C%20clean%20studio%20portrait%20with%20soft%20natural%20lighting%2C%20modern%20corporate%20headshot%20style%2C%20simple%20neutral%20light%20gray%20background%2C%20approachable%20and%20trustworthy%20expression%2C%20high-end%20business%20photography&width=400&height=400&seq=team-victor-edu&orientation=squarish",
+//   },
+//   {
+//     name: "Amara Okafor",
+//     role: "Head of Operations",
+//     bio: "Amara oversees all visa processing pipelines and ensures every application moves efficiently through each stage.",
+//     image: "https://readdy.ai/api/search-image?query=Professional%20African%20Nigerian%20woman%20in%20her%20mid%2030s%20wearing%20an%20orange%20blouse%20and%20navy%20blazer%2C%20confident%20genuine%20smile%2C%20clean%20studio%20portrait%20with%20soft%20natural%20lighting%2C%20modern%20corporate%20headshot%20style%2C%20simple%20neutral%20light%20gray%20background%2C%20warm%20approachable%20expression%2C%20high-end%20business%20photography&width=400&height=400&seq=team-amara-okafor&orientation=squarish",
+//   },
+//   {
+//     name: "David Bello",
+//     role: "Lead Travel Consultant",
+//     bio: "David curates every travel package on our platform, personally vetting hotels, tours, and experiences across 150+ destinations.",
+//     image: "https://readdy.ai/api/search-image?query=Professional%20African%20Nigerian%20man%20in%20his%20late%2030s%20wearing%20a%20casual%20navy%20polo%20shirt%2C%20warm%20friendly%20smile%2C%20clean%20studio%20portrait%20with%20soft%20natural%20lighting%2C%20modern%20corporate%20headshot%20style%2C%20simple%20neutral%20light%20gray%20background%2C%20enthusiastic%20and%20approachable%20expression%2C%20high-end%20business%20photography&width=400&height=400&seq=team-david-bello&orientation=squarish",
+//   },
+//   {
+//     name: "Chioma Nwosu",
+//     role: "Client Relations Manager",
+//     bio: "Chioma ensures every client receives personalized attention from consultation through to boarding the plane.",
+//     image: "https://readdy.ai/api/search-image?query=Professional%20African%20Nigerian%20woman%20in%20her%20early%2030s%20wearing%20a%20cream%20blouse%2C%20bright%20genuine%20smile%2C%20clean%20studio%20portrait%20with%20soft%20natural%20lighting%2C%20modern%20corporate%20headshot%20style%2C%20simple%20neutral%20light%20gray%20background%2C%20warm%20and%20caring%20expression%2C%20high-end%20business%20photography&width=400&height=400&seq=team-chioma-nwosu&orientation=squarish",
+//   },
+// ];
 
 const values = [
   {
@@ -52,12 +52,12 @@ const values = [
 ];
 
 const milestones = [
-  { year: "2018", event: "Eduvic Travels founded in Lagos with a team of 3 travel consultants." },
-  { year: "2019", event: "Processed our first 500 visas with a 97% approval rate." },
-  { year: "2020", event: "Launched digital consultation platform to serve clients remotely during the pandemic." },
-  { year: "2022", event: "Expanded to 150+ destinations and processed over 2,000 visas in a single year." },
-  { year: "2024", event: "Launched real-time visa tracker and automated booking system for clients." },
-  { year: "2025", event: "New digital platform with full self-service portal, live stage tracking, and instant consultation booking." },
+  // { year: "2018", event: "Eduvic Travels founded in Lagos with a team of 3 travel consultants." },
+  // { year: "2019", event: "Processed our first 500 visas with a 97% approval rate." },
+  // { year: "2020", event: "Launched digital consultation platform to serve clients remotely during the pandemic." },
+  { year: "2022", event: "Eduvic Travels founded in Lagos with a team of 3 travel consultants." },
+  { year: "2024", event: "Processed our first 500 visas with a 97% approval rate." },
+  { year: "2025", event: "Launched digital consultation platform to serve clients remotely during the pandemic." },
 ];
 
 export default function About() {
@@ -174,7 +174,7 @@ export default function About() {
       </section>
 
       {/* Team */}
-      <section className="py-14 md:py-20 px-4 md:px-6 bg-slate-100/70">
+      {/* <section className="py-14 md:py-20 px-4 md:px-6 bg-slate-100/70">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-10 md:mb-14">
             <p className="text-sm font-semibold text-orange-600 uppercase tracking-wider mb-2">Meet The Team</p>
@@ -204,7 +204,7 @@ export default function About() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       <PublicFooter />
     </div>

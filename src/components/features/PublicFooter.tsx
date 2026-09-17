@@ -27,7 +27,7 @@ export default function PublicFooter() {
               ].map((social) => (
                 <a
                   key={social.label}
-                  href="#"
+                  href="https://www.instagram.com/eduvictravels/"
                   aria-label={social.label}
                   className="w-9 h-9 flex items-center justify-center rounded-lg bg-primary-800/50 hover:bg-accent-500 text-foreground-400 hover:text-background-50 transition-all"
                 >
@@ -95,19 +95,19 @@ export default function PublicFooter() {
             <ul className="space-y-3">
               <li className="flex items-start gap-2.5 text-sm text-foreground-400">
                 <i className="ri-mail-line text-accent-400 mt-0.5" />
-                <span>hello@eduvictravels.com</span>
+                <span>eduvicgloballtravels@gmail.com<br />eduvicglobalinternational@gmail.com</span>
               </li>
               <li className="flex items-start gap-2.5 text-sm text-foreground-400">
                 <i className="ri-phone-line text-accent-400 mt-0.5" />
-                <span>+234 801 234 5678</span>
+                <span>+234 808 058 7601<br / >+234 812 666 9153</span>
               </li>
               <li className="flex items-start gap-2.5 text-sm text-foreground-400">
                 <i className="ri-map-pin-line text-accent-400 mt-0.5" />
-                <span>12 Admiralty Way, Lekki Phase 1, Lagos, Nigeria</span>
+                <span>Landmark House, Isaac John Street, Ikeja, Lagos, Nigeria</span>
               </li>
               <li className="flex items-start gap-2.5 text-sm text-foreground-400">
                 <i className="ri-time-line text-accent-400 mt-0.5" />
-                <span>Mon - Fri: 8:00 AM - 6:00 PM</span>
+                <span>Mon - Fri: 8:00 AM - 5:00 PM</span>
               </li>
             </ul>
           </div>
