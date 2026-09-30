@@ -1,6 +1,15 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { supabase } from "../../../lib/supabase";
 import Reveal from "../../../components/features/Reveal";
+import ImageUpload from "../../../components/features/ImageUpload";
+import {
+  DURATION_UNITS,
+  formatDuration,
+  normalizeUnit,
+  type DurationUnit,
+} from "../../../lib/duration";
+
+const IMAGE_BUCKET = "package-images";
 
 interface PackageRow {
   id: string;
@@ -8,6 +17,7 @@ interface PackageRow {
   destination: string;
   price: number;
   duration_days: number;
+  duration_unit: string | null;
   description: string;
   image_url: string;
   tags: string[] | null;
@@ -22,6 +32,7 @@ type Draft = {
   destination: string;
   price: string;
   duration_days: string;
+  duration_unit: DurationUnit;
   description: string;
   image_url: string;
   tags: string;
@@ -35,6 +46,7 @@ const emptyDraft: Draft = {
   destination: "",
   price: "",
   duration_days: "7",
+  duration_unit: "days",
   description: "",
   image_url: "",
   tags: "",
@@ -43,6 +55,15 @@ const emptyDraft: Draft = {
 };
 
 const formatPrice = (p: number) => `₦${Number(p || 0).toLocaleString()}`;
+
+/** Pulls the object path back out of a public storage URL, or null if the
+ *  image lives somewhere else (a pasted stock photo link, say). */
+function storagePathFromUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+  const marker = `/storage/v1/object/public/${IMAGE_BUCKET}/`;
+  const at = url.indexOf(marker);
+  return at === -1 ? null : decodeURIComponent(url.slice(at + marker.length));
+}
 
 export default function AdminPackages() {
   const [packages, setPackages] = useState<PackageRow[]>([]);
@@ -63,7 +84,7 @@ export default function AdminPackages() {
     const { data, error: err } = await supabase
       .from("travel_offers")
       .select(
-        "id,title,destination,price,duration_days,description,image_url,tags,inclusions,is_active,created_at"
+        "id,title,destination,price,duration_days,duration_unit,description,image_url,tags,inclusions,is_active,created_at"
       )
       .order("created_at", { ascending: false });
 
@@ -89,6 +110,7 @@ export default function AdminPackages() {
       destination: pkg.destination,
       price: String(pkg.price ?? ""),
       duration_days: String(pkg.duration_days ?? ""),
+      duration_unit: normalizeUnit(pkg.duration_unit),
       description: pkg.description || "",
       image_url: pkg.image_url || "",
       tags: (pkg.tags || []).join(", "),
@@ -112,7 +134,7 @@ export default function AdminPackages() {
       return;
     }
     if (!draft.duration_days || Number(draft.duration_days) <= 0) {
-      setError("Set how many days the trip runs.");
+      setError("Set how long the package runs.");
       return;
     }
 
@@ -121,6 +143,7 @@ export default function AdminPackages() {
       destination: draft.destination.trim(),
       price: Number(draft.price),
       duration_days: Number(draft.duration_days),
+      duration_unit: draft.duration_unit,
       description: draft.description.trim(),
       image_url:
         draft.image_url.trim() ||
@@ -186,6 +209,11 @@ export default function AdminPackages() {
       showToast(err.message);
       return;
     }
+
+    // Take the uploaded cover with it so storage doesn't fill with orphans.
+    const path = storagePathFromUrl(target.image_url);
+    if (path) await supabase.storage.from(IMAGE_BUCKET).remove([path]);
+
     setPackages((prev) => prev.filter((p) => p.id !== target.id));
     showToast("Package deleted");
   };
@@ -275,7 +303,7 @@ export default function AdminPackages() {
                       {formatPrice(pkg.price)}
                       <span className="text-xs font-normal text-foreground-500">
                         {" "}
-                        · {pkg.duration_days} days
+                        · {formatDuration(pkg.duration_days, pkg.duration_unit)}
                       </span>
                     </p>
                   </div>
@@ -364,16 +392,35 @@ export default function AdminPackages() {
 
                 <div>
                   <label className={label} htmlFor="pkg-duration">
-                    Duration in days
+                    Duration
                   </label>
-                  <input
-                    id="pkg-duration"
-                    type="number"
-                    min={1}
-                    className={field}
-                    value={draft.duration_days}
-                    onChange={(e) => setDraft({ ...draft, duration_days: e.target.value })}
-                  />
+                  <div className="flex gap-2">
+                    <input
+                      id="pkg-duration"
+                      type="number"
+                      min={1}
+                      className={`${field} flex-1`}
+                      value={draft.duration_days}
+                      onChange={(e) => setDraft({ ...draft, duration_days: e.target.value })}
+                    />
+                    <select
+                      aria-label="Duration unit"
+                      className={`${field} w-32 shrink-0`}
+                      value={draft.duration_unit}
+                      onChange={(e) =>
+                        setDraft({ ...draft, duration_unit: e.target.value as DurationUnit })
+                      }
+                    >
+                      {DURATION_UNITS.map((u) => (
+                        <option key={u.value} value={u.value}>
+                          {u.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <p className="text-xs text-foreground-400 mt-1">
+                    Shows as “{formatDuration(draft.duration_days || 0, draft.duration_unit)}”
+                  </p>
                 </div>
 
                 <div>
@@ -406,26 +453,12 @@ export default function AdminPackages() {
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className={label} htmlFor="pkg-image">
-                    Cover image URL
-                  </label>
-                  <input
-                    id="pkg-image"
-                    className={field}
+                  <span className={label}>Cover image</span>
+                  <ImageUpload
                     value={draft.image_url}
-                    onChange={(e) => setDraft({ ...draft, image_url: e.target.value })}
-                    placeholder="https://…"
+                    onChange={(url) => setDraft((d) => ({ ...d, image_url: url }))}
+                    disabled={saving}
                   />
-                  {draft.image_url ? (
-                    <img
-                      src={draft.image_url}
-                      alt=""
-                      className="mt-3 w-full h-36 object-cover rounded-lg border border-background-200 animate-fade-in"
-                      onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).style.display = "none";
-                      }}
-                    />
-                  ) : null}
                 </div>
 
                 <div className="sm:col-span-2">

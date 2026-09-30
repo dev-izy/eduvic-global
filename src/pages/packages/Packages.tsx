@@ -4,6 +4,12 @@ import PublicNavbar from "../../components/features/PublicNavbar";
 import PublicFooter from "../../components/features/PublicFooter";
 import Reveal from "../../components/features/Reveal";
 import { supabase } from "../../lib/supabase";
+import {
+  durationInDays,
+  durationKey,
+  formatDurationTitle,
+  normalizeUnit,
+} from "../../lib/duration";
 
 interface PackageRow {
   id: string;
@@ -11,6 +17,7 @@ interface PackageRow {
   destination: string;
   price: number;
   duration_days: number;
+  duration_unit: string | null;
   description: string;
   image_url: string;
   tags: string[];
@@ -32,7 +39,7 @@ export default function Packages() {
   useEffect(() => {
     supabase
       .from("travel_offers")
-      .select("id,title,destination,price,duration_days,description,image_url,tags,is_active")
+      .select("id,title,destination,price,duration_days,duration_unit,description,image_url,tags,is_active")
       .eq("is_active", true)
       .order("created_at", { ascending: false })
       .then(({ data, error }) => {
@@ -53,10 +60,20 @@ export default function Packages() {
     [packages]
   );
 
-  const durations = useMemo(
-    () => Array.from(new Set(packages.map((p) => p.duration_days))).sort((a, b) => a - b),
-    [packages]
-  );
+  const durations = useMemo(() => {
+    // One option per value + unit pair, ordered by real length so a 7-day
+    // trip sorts before a 6-month programme.
+    const seen = new Map<string, { value: number; unit: string }>();
+    for (const p of packages) {
+      seen.set(durationKey(p.duration_days, p.duration_unit), {
+        value: p.duration_days,
+        unit: normalizeUnit(p.duration_unit),
+      });
+    }
+    return Array.from(seen.values()).sort(
+      (a, b) => durationInDays(a.value, a.unit) - durationInDays(b.value, b.unit)
+    );
+  }, [packages]);
 
   const filtered = useMemo(() => {
     let result = [...packages];
@@ -80,7 +97,9 @@ export default function Packages() {
     }
 
     if (selectedDuration) {
-      result = result.filter((p) => p.duration_days === Number(selectedDuration));
+      result = result.filter(
+        (p) => durationKey(p.duration_days, p.duration_unit) === selectedDuration
+      );
     }
 
     if (selectedBudget) {
@@ -105,10 +124,18 @@ export default function Packages() {
         result.sort((a, b) => b.price - a.price);
         break;
       case "duration-asc":
-        result.sort((a, b) => a.duration_days - b.duration_days);
+        result.sort(
+          (a, b) =>
+            durationInDays(a.duration_days, a.duration_unit) -
+            durationInDays(b.duration_days, b.duration_unit)
+        );
         break;
       case "duration-desc":
-        result.sort((a, b) => b.duration_days - a.duration_days);
+        result.sort(
+          (a, b) =>
+            durationInDays(b.duration_days, b.duration_unit) -
+            durationInDays(a.duration_days, a.duration_unit)
+        );
         break;
     }
 
@@ -217,7 +244,12 @@ export default function Packages() {
                 >
                   <option value="">Any Duration</option>
                   {durations.map((d) => (
-                    <option key={d} value={d}>{d} Days</option>
+                    <option
+                      key={durationKey(d.value, d.unit)}
+                      value={durationKey(d.value, d.unit)}
+                    >
+                      {formatDurationTitle(d.value, d.unit)}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -333,7 +365,7 @@ export default function Packages() {
                           <span key={tag} className="px-2.5 py-1 bg-slate-950/70 backdrop-blur-md text-white text-[11px] font-medium rounded-full">{tag}</span>
                         ))}
                       </div>
-                      <div className="absolute bottom-3 right-3 px-3 py-1 bg-slate-950/70 backdrop-blur-md text-white text-xs font-semibold rounded-lg">{pkg.duration_days} Days</div>
+                      <div className="absolute bottom-3 right-3 px-3 py-1 bg-slate-950/70 backdrop-blur-md text-white text-xs font-semibold rounded-lg">{formatDurationTitle(pkg.duration_days, pkg.duration_unit)}</div>
                     </div>
                     <div className="p-6 flex-1 flex flex-col justify-between">
                       <div>

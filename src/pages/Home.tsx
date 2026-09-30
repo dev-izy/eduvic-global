@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import PublicNavbar from "../components/features/PublicNavbar";
 import PublicFooter from "../components/features/PublicFooter";
 import Reveal from "../components/features/Reveal";
+import { durationInDays, durationKey, formatDurationTitle, normalizeUnit } from "../lib/duration";
 import { supabase } from "../lib/supabase";
 import travelVideo from "../assets/travel-video.mp4";
 
@@ -12,6 +13,7 @@ interface FeaturedPackage {
   destination: string;
   price: number;
   duration_days: number;
+  duration_unit: string | null;
   description: string;
   image_url: string;
   tags: string[];
@@ -50,7 +52,7 @@ export default function Home() {
   const [selectedObjective, setSelectedObjective] = useState<number | null>(null);
   const [featuredPackages, setFeaturedPackages] = useState<FeaturedPackage[]>([]);
   const [filterDestinations, setFilterDestinations] = useState<string[]>([]);
-  const [filterDurations, setFilterDurations] = useState<number[]>([]);
+  const [filterDurations, setFilterDurations] = useState<{ value: number; unit: string }[]>([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -58,7 +60,7 @@ export default function Home() {
     async function fetchFeatured() {
       const { data, error } = await supabase
         .from("travel_offers")
-        .select("id,title,destination,price,duration_days,description,image_url,tags,is_active")
+        .select("id,title,destination,price,duration_days,duration_unit,description,image_url,tags,is_active")
         .eq("is_active", true)
         .order("created_at", { ascending: false })
         .limit(3);
@@ -81,13 +83,24 @@ export default function Home() {
     async function fetchFilters() {
       const { data, error } = await supabase
         .from("travel_offers")
-        .select("destination,duration_days")
+        .select("destination,duration_days,duration_unit")
         .eq("is_active", true);
 
       if (!error && data && isMounted) {
-        const rows = data as { destination: string; duration_days: number }[];
+        const rows = data as { destination: string; duration_days: number; duration_unit: string | null }[];
         setFilterDestinations(Array.from(new Set(rows.map((r) => r.destination))).sort());
-        setFilterDurations(Array.from(new Set(rows.map((r) => r.duration_days))).sort((a, b) => a - b));
+        const byKey = new Map<string, { value: number; unit: string }>();
+        for (const r of rows) {
+          byKey.set(durationKey(r.duration_days, r.duration_unit), {
+            value: r.duration_days,
+            unit: normalizeUnit(r.duration_unit),
+          });
+        }
+        setFilterDurations(
+          Array.from(byKey.values()).sort(
+            (a, b) => durationInDays(a.value, a.unit) - durationInDays(b.value, b.unit)
+          )
+        );
       }
     }
 
@@ -214,9 +227,14 @@ export default function Home() {
                   id="hero-filter-duration"
                   className="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-orange-500 text-slate-700 font-medium"
                 >
-                  <option value="">Days</option>
+                  <option value="">Any duration</option>
                   {filterDurations.map((d) => (
-                    <option key={d} value={d}>{d} Days</option>
+                    <option
+                      key={durationKey(d.value, d.unit)}
+                      value={durationKey(d.value, d.unit)}
+                    >
+                      {formatDurationTitle(d.value, d.unit)}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -327,7 +345,7 @@ export default function Home() {
                       <span key={tag} className="px-2.5 py-1 bg-slate-900/70 backdrop-blur-sm text-white text-xs font-medium rounded-full">{tag}</span>
                     ))}
                   </div>
-                  <div className="absolute bottom-3 right-3 px-3 py-1.5 bg-slate-900/70 backdrop-blur-sm text-white text-sm font-semibold rounded-lg">{pkg.duration_days} Days</div>
+                  <div className="absolute bottom-3 right-3 px-3 py-1.5 bg-slate-900/70 backdrop-blur-sm text-white text-sm font-semibold rounded-lg">{formatDurationTitle(pkg.duration_days, pkg.duration_unit)}</div>
                 </div>
                 <div className="p-5">
                   <div className="flex items-center gap-1.5 text-xs text-slate-500 mb-2">
